@@ -7,7 +7,7 @@
         <h1>{{ article.title }}</h1>
         <p class="dek">{{ article.summary }}</p>
         <div class="byline">
-          <span>文 / {{ article.byline }}</span>
+          <span v-if="article.byline">文 / {{ article.byline }}</span>
           <time>{{ formatDate(article.articleDate) }}</time>
         </div>
       </header>

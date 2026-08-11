@@ -1,8 +1,8 @@
-import type { ArticleDTO } from '~/types/article';
+import type { ArticleDTO, PublicArticleDetail } from '~/types/article';
 
 export const usePublicArticles = () => ({
   list: () => $fetch<ArticleDTO[]>('/api/articles'),
-  get: (slug: string) => $fetch<ArticleDTO>(`/api/articles/${encodeURIComponent(slug)}`),
+  get: (slug: string) => $fetch<PublicArticleDetail>(`/api/articles/${encodeURIComponent(slug)}`),
   preview: (id: string, token: string) =>
     $fetch<ArticleDTO>(`/api/preview/${id}`, { query: { token } }),
 });

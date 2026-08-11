@@ -8,7 +8,7 @@
       <NuxtLink class="category" :to="{ path: '/articles', query: { category: article.category.slug } }">{{ localizedName(article.category) }}</NuxtLink>
       <h2><NuxtLink :to="`/articles/${article.slug}`">{{ article.title }}</NuxtLink></h2>
       <p>{{ article.summary }}</p>
-      <small>{{ article.byline }} · {{ formatDate(article.articleDate) }}</small>
+      <small><template v-if="article.byline">{{ article.byline }} · </template>{{ formatDate(article.articleDate) }}</small>
     </div>
   </article>
 </template>
