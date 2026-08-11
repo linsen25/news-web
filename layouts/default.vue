@@ -7,7 +7,7 @@
           <NuxtLink to="/">{{ text.home }}</NuxtLink>
           <NuxtLink to="/articles">{{ text.news }}</NuxtLink>
           <NuxtLink to="/subscribe">{{ text.subscribe }}</NuxtLink>
-          <a href="#about">{{ text.about }}</a>
+          <NuxtLink to="/about">{{ text.about }}</NuxtLink>
         </nav>
         <div class="header-tools">
           <form class="header-search" role="search" @submit.prevent="search">
@@ -29,7 +29,7 @@
         </section>
         <section>
           <h2>{{ text.aboutUs }}</h2>
-          <a href="#about">{{ text.siteIntroduction }}</a>
+          <NuxtLink to="/about">{{ text.siteIntroduction }}</NuxtLink>
           <NuxtLink to="/articles">{{ text.news }}</NuxtLink>
           <span>{{ text.contentCooperation }}</span>
         </section>
