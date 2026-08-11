@@ -1,14 +1,16 @@
 <template>
   <article v-if="article" class="story">
     <header class="story-header">
-      <NuxtLink class="category" to="/articles">{{ article.category.name }}</NuxtLink>
+      <NuxtLink class="category" :to="{ path: '/articles', query: { category: article.category.slug } }">{{ article.category.name }}</NuxtLink>
       <h1>{{ article.title }}</h1>
       <p class="dek">{{ article.summary }}</p>
       <div class="byline"><span>文 / {{ article.author.name }}</span><time>{{ formatDate(article.publishedAt) }}</time></div>
     </header>
     <figure><img :src="article.coverImage" :alt="article.title" /></figure>
     <div class="story-body" v-html="bodyHtml" />
-    <footer class="story-tags"><span v-for="tag in article.tags" :key="tag.id"># {{ tag.name }}</span></footer>
+    <footer class="story-tags">
+      <NuxtLink v-for="tag in article.tags" :key="tag.id" :to="{ path: '/articles', query: { tag: tag.slug } }"># {{ tag.name }}</NuxtLink>
+    </footer>
   </article>
 </template>
 

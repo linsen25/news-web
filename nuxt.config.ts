@@ -10,8 +10,8 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      titleTemplate: '%s · The Current',
-      title: 'The Current',
+      titleTemplate: '%s · 中加网',
+      title: '中加网',
       meta: [{ name: 'description', content: '独立、清晰、有现场感的新闻阅读体验' }],
     },
   },
