@@ -17,7 +17,7 @@
     </nav>
 
     <nav v-if="tags.length" class="tag-filters" aria-label="新闻标签">
-      <span>热门标签</span>
+      <span>按标签筛选</span>
       <NuxtLink
         v-for="tag in tags"
         :key="tag.id"

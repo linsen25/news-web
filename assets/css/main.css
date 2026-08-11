@@ -72,10 +72,10 @@ a.category:hover { text-decoration:underline; }
 .dek { max-width:720px; margin:0 auto 25px; color:#555b56; font:600 20px/1.7 'Noto Serif SC'; }
 .byline { display:flex; justify-content:center; gap:24px; color:var(--muted); font-size:13px; }
 .story figure { margin:55px 0 45px; }.story figure img { max-height:650px; }.story figcaption { color:var(--muted); font-size:11px; margin-top:8px; }
-.story-body { max-width:720px; margin:auto; font:400 18px/2 'Noto Serif SC'; }
+.story-body { max-width:900px; margin:auto; font:400 18px/2 'Noto Serif SC'; }
 .story-body h2 { font-size:30px; margin-top:45px; }
 .story-body blockquote { margin:40px 0; padding:20px 28px; border-left:4px solid var(--red); background:#ebe6db; font-size:22px; font-weight:600; }
-.story-tags { max-width:720px; margin:45px auto 0; border-top:1px solid var(--line); padding-top:20px; display:flex; gap:10px; color:var(--red); font-size:12px; }
+.story-tags { max-width:900px; margin:45px auto 0; border-top:1px solid var(--line); padding-top:20px; display:flex; gap:10px; color:var(--red); font-size:12px; }
 .preview-banner { position:sticky; top:0; z-index:5; padding:10px 20px; color:#18221d; background:#e2ff71; text-align:center; font-size:13px; font-weight:600; }
 .subscription-page { padding-top:90px; }
 .subscription-page>.eyebrow { color:var(--red); letter-spacing:2px; font-size:11px; font-weight:600; }
