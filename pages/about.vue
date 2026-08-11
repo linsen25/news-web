@@ -36,8 +36,8 @@
 const language = useCookie<'zh' | 'en'>('site-language', { default: () => 'zh' });
 const copy = {
   zh: {
-    title: '中加网（China Canada Net）是连接中国与加拿大的权威综合性网络门户',
-    lead: '汇聚双边资讯与优质资源，建设集资讯发布、精准对接与业务支持于一体的一站式服务平台。',
+    title: '中加网（China Canada Net）',
+    lead: '连接中国与加拿大的综合性权威网络门户。汇聚双边资讯与优质资源，建设集资讯发布、精准对接与业务支持于一体的一站式服务平台。',
     introduction: [
       '中加网（China Canada Net）是加拿大综合性权威网络门户，致力于打造中加两国资讯与资源共享的一站式服务平台。平台立足中加双边交流核心需求，深度聚焦政治、经济、教育、科技、文化及社会发展等关键领域，通过整合双边优质资源，构建起集资讯发布、精准对接与业务支持于一体的全方位服务体系。',
       '作为联结中加两国社会的重要桥梁与纽带，中加网持续推动双边交流与公共对话，促进双方在全方位、多层次、宽领域的务实合作，不断提升国际传播能力与专业服务能级，全力打造兼具广泛影响力与高度公信力的跨国综合性交流平台。',
@@ -47,10 +47,10 @@ const copy = {
     groups: [
       {
         title: '公共关系服务',
-        introduction: '依托深耕中加两地的资源网络与专业服务团队，为政府机构、市场主体及社会组织提供全链条公共关系解决方案，覆盖品牌管理、政务对接、媒体运维、危机应对等核心场景，助力客户在双边市场构建良好声誉、拓展合作空间。',
+        introduction: '依托深耕中加两地的资源网络与专业服务团队，为政府机构、市场主体及社会组织提供全链条公共关系解决方案，覆盖品牌管理、政企对接、媒体运维、危机应对等核心场景，助力客户在双边市场构建良好声誉、拓展合作空间。',
         items: [
           { title: '品牌形象管理', description: '结合中加两地市场特性与客户发展定位，提供品牌战略定位、形象体系塑造、传播路径规划及市场口碑运维等全流程服务，助力客户在双边市场建立清晰、正向的品牌认知与市场影响力。' },
-          { title: '两国政府关系支持', description: '基于对中加两国政策体系、政务规则与产业导向的深度研判，为双边机构、企业提供政策解读、政务对接、合规咨询及公共事务协调等专业支持，搭建政企高效沟通的畅通渠道。' },
+          { title: '两国政企关系支持', description: '基于对中加两国政策体系、政务规则与产业导向的深度研判，为双边机构、企业提供政策解读、政务对接、合规咨询及公共事务协调等专业支持，搭建政企高效沟通的畅通渠道。' },
           { title: '媒体关系拓展与维护', description: '整合中加两国主流媒体、行业媒体及新媒体资源，为客户提供媒体对接、采访协调、关系长效维护等服务，构建稳定多元的媒体传播网络，夯实客户传播发声的渠道基础。' },
           { title: '危机传播策略制定', description: '针对突发舆情与公共事件，提供全天候舆情研判、快速响应方案、传播路径引导及危机公关体系搭建服务，助力客户有效管控声誉风险，妥善应对各类公共关系突发状况。' },
         ],
@@ -71,13 +71,14 @@ const copy = {
           { title: '全球多语种主流媒体信息分发', description: '联动中加及全球范围内的多语种主流媒体渠道，覆盖纸媒、新闻网站、移动端终端等多元载体，为客户提供新闻通稿、专题内容的定制化分发服务，有效扩大信息传播半径与受众覆盖范围。' },
           { title: '多平台媒体运维传播', description: '为客户提供官方网站、社交媒体账号、新媒体平台等多端口的内容运营与传播推广服务，结合不同平台的传播特性定制内容策略，实现品牌的持续曝光与目标用户的深度触达。' },
           { title: '专题报道与视频制作', description: '围绕客户核心诉求，策划制作深度专题报道、主题宣传片、纪录短视频、图文特稿等多元内容产品，以图文、音视频融合的融媒体形态，强化传播内容的深度与感染力，提升传播实效。' },
+          { title: '智库研究与战略咨询', description: '依托专业研究团队，聚焦国际政治经济、产业发展、政策法规等领域、开展深度研究与专题报告撰写，提供政策解读、市场分析与战略咨询服务，助力客户把握趋势、优化决策。' },
         ],
       },
     ],
   },
   en: {
-    title: 'China Canada Net is an authoritative comprehensive digital portal connecting China and Canada',
-    lead: 'Sharing bilateral information and quality resources through an integrated platform for news, targeted connections, and professional support.',
+    title: 'China Canada Net',
+    lead: 'An authoritative comprehensive digital portal connecting China and Canada. Bringing together bilateral information and quality resources through a one-stop platform for news publishing, targeted connections, and professional support.',
     introduction: [
       "China Canada Net is Canada's authoritative comprehensive digital portal. It provides a one-stop platform for China–Canada information and resource sharing, with a focus on politics, business, education, technology, culture, and social development.",
       'As a bridge between the two societies, China Canada Net promotes bilateral exchange, public dialogue, and practical cooperation while strengthening international communications and professional cross-border services.',
@@ -85,9 +86,9 @@ const copy = {
     servicesTitle: 'Core Products and Services',
     servicesLead: 'Professional support for institutions, businesses, and organizations across public relations, bilateral events, and media communications.',
     groups: [
-      { title: 'Public Relations Services', introduction: 'End-to-end public relations solutions built on professional teams and networks across China and Canada.', items: [
+      { title: 'Public Relations Services', introduction: 'End-to-end public relations solutions built on professional teams and networks across China and Canada, covering brand management, government-business engagement, media operations, and crisis response.', items: [
         { title: 'Brand Image Management', description: 'Brand positioning, identity development, communications planning, and reputation management tailored to both markets.' },
-        { title: 'Government Relations Support', description: 'Policy interpretation, government engagement, compliance consultation, and public affairs coordination.' },
+        { title: 'Government-Business Relations Support', description: 'Policy interpretation, government engagement, compliance consultation, and public affairs coordination that support effective communication between institutions and businesses.' },
         { title: 'Media Relations', description: 'Media outreach, interview coordination, and long-term relationship management across mainstream, trade, and digital media.' },
         { title: 'Crisis Communications', description: 'Issue monitoring, rapid-response planning, communications guidance, and reputation risk management.' },
       ] },
@@ -100,6 +101,7 @@ const copy = {
         { title: 'Global Multilingual Distribution', description: 'Customized distribution of press releases and features through print, digital, and mobile media channels worldwide.' },
         { title: 'Multi-Platform Media Operations', description: 'Content strategy and ongoing operations for websites, social accounts, and emerging media platforms.' },
         { title: 'Features and Video Production', description: 'In-depth features, promotional films, documentary shorts, and multimedia storytelling designed for reach and impact.' },
+        { title: 'Think Tank Research and Strategic Advisory', description: 'Research and thematic reports on international political economy, industry development, policy, and regulation, with policy interpretation, market analysis, and strategic advisory to support informed decisions.' },
       ] },
     ],
   },

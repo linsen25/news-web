@@ -26,6 +26,8 @@ button { font:inherit; }
 .edition p { margin:0; font:600 20px 'Noto Serif SC'; }
 .article-card.featured { display:grid; grid-template-columns:1.35fr 1fr; gap:44px; padding:42px 0 50px; border-bottom:2px solid var(--ink); }
 .featured .card-image img { height:470px; }
+.card-image.image-placeholder { min-height:260px; display:grid; place-items:center; background:#e7e1d5; color:var(--ink); letter-spacing:.16em; font:700 14px/1.4 Arial,sans-serif; }
+.featured .card-image.image-placeholder { min-height:470px; }
 .featured .card-copy { align-self:center; }
 .category { color:var(--red); font-size:12px; font-weight:600; letter-spacing:1px; }
 a.category:hover { text-decoration:underline; }
