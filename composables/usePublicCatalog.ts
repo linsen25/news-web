@@ -1,6 +1,7 @@
 export interface PublicCategory {
   id: string;
   name: string;
+  nameEn: string;
   slug: string;
   parentId?: string | null;
 }
@@ -8,6 +9,7 @@ export interface PublicCategory {
 export interface PublicTag {
   id: string;
   name: string;
+  nameEn: string;
   slug: string;
   categoryId?: string | null;
 }

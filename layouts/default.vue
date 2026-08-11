@@ -34,7 +34,7 @@
                   @mousedown.prevent="openArticle(article.slug)"
                 >
                   <strong>{{ article.title }}</strong>
-                  <span>{{ article.category.name }} · {{ formatSuggestionDate(article.articleDate) }}</span>
+                  <span>{{ localizedName(article.category) }} · {{ formatSuggestionDate(article.articleDate) }}</span>
                 </button>
                 <button class="search-all" type="submit" @mousedown.prevent="search">{{ text.viewResults }}</button>
               </template>
@@ -102,6 +102,7 @@ const copy = {
   },
 } as const;
 const text = computed(() => copy[language.value]);
+const localizedName = (item: { name: string; nameEn?: string }) => language.value === 'en' && item.nameEn ? item.nameEn : item.name;
 const toggleLanguage = () => { language.value = language.value === 'zh' ? 'en' : 'zh'; };
 const suggestions = computed(() => {
   const query = keyword.value.trim().toLocaleLowerCase();
@@ -109,7 +110,7 @@ const suggestions = computed(() => {
   return searchableArticles.value
     .map((article) => {
       const title = article.title.toLocaleLowerCase();
-      const secondary = [article.summary, article.category.name, ...article.tags.map((tag) => tag.name)].join(' ').toLocaleLowerCase();
+      const secondary = [article.summary, article.category.name, article.category.nameEn, ...article.tags.flatMap((tag) => [tag.name, tag.nameEn])].join(' ').toLocaleLowerCase();
       return { article, score: title === query ? 0 : title.startsWith(query) ? 1 : title.includes(query) ? 2 : secondary.includes(query) ? 3 : 99 };
     })
     .filter(({ score }) => score < 99)
