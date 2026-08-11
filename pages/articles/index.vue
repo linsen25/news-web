@@ -16,11 +16,11 @@
       >{{ category.name }}</NuxtLink>
     </nav>
 
-    <nav v-if="tags.length" class="tag-filters" aria-label="文章标签">
+    <nav v-if="displayedTags.length" class="tag-filters" aria-label="文章标签">
       <span>按标签筛选</span>
       <NuxtLink :to="allTagsLocation" :class="{ active: !selectedTag }">全部标签</NuxtLink>
       <NuxtLink
-        v-for="tag in tags"
+        v-for="tag in displayedTags"
         :key="tag.id"
         :to="tagLocation(tag.slug)"
         :class="{ active: selectedTag === tag.slug }"
@@ -50,9 +50,14 @@ const [{ data: articles }, { data: categories }, { data: tags }] = await Promise
 const selectedCategory = computed(() => String(route.query.category || ''));
 const selectedTag = computed(() => String(route.query.tag || ''));
 const searchKeyword = computed(() => String(route.query.q || '').trim().toLocaleLowerCase());
+const displayedTags = computed(() => {
+  if (!selectedCategory.value) return tags.value;
+  const category = categories.value.find((item) => item.slug === selectedCategory.value);
+  return category ? tags.value.filter((tag) => tag.categoryId === category.id) : [];
+});
 
 const descendantIds = (selected: PublicCategory) => {
-  const ids = new Set<number>([selected.id]);
+  const ids = new Set<string>([selected.id]);
   let changed = true;
   while (changed) {
     changed = false;
@@ -106,7 +111,7 @@ const categoryLocation = (slug: string) => ({
   path: '/articles',
   query: {
     category: slug,
-    ...(selectedTag.value ? { tag: selectedTag.value } : {}),
+    ...(tags.value.some((tag) => tag.slug === selectedTag.value && tag.categoryId === categories.value.find((category) => category.slug === slug)?.id) ? { tag: selectedTag.value } : {}),
     ...(searchKeyword.value ? { q: route.query.q as string } : {}),
   },
 });

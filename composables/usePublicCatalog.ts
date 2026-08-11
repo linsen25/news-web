@@ -1,14 +1,15 @@
 export interface PublicCategory {
-  id: number;
+  id: string;
   name: string;
   slug: string;
-  parentId?: number | null;
+  parentId?: string | null;
 }
 
 export interface PublicTag {
-  id: number;
+  id: string;
   name: string;
   slug: string;
+  categoryId?: string | null;
 }
 
 export const usePublicCatalog = () => ({
