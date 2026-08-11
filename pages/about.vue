@@ -36,10 +36,10 @@
 const language = useCookie<'zh' | 'en'>('site-language', { default: () => 'zh' });
 const copy = {
   zh: {
-    title: '连接中国与加拿大的综合性网络门户',
+    title: '加拿大综合性权威网络门户',
     lead: '汇聚双边资讯与优质资源，建设集资讯发布、精准对接与业务支持于一体的一站式服务平台。',
     introduction: [
-      '中加网（China Canada Net）是连接中国与加拿大的权威综合性网络门户，致力于打造两国资讯与资源共享的一站式服务平台。平台立足中加双边交流核心需求，深度聚焦政治、经济、教育、科技、文化及社会发展等关键领域，通过整合双边优质资源，构建起集资讯发布、精准对接与业务支持于一体的全方位服务体系。',
+      '中加网（China Canada Net）是加拿大综合性权威网络门户，致力于打造中加两国资讯与资源共享的一站式服务平台。平台立足中加双边交流核心需求，深度聚焦政治、经济、教育、科技、文化及社会发展等关键领域，通过整合双边优质资源，构建起集资讯发布、精准对接与业务支持于一体的全方位服务体系。',
       '作为联结中加两国社会的重要桥梁与纽带，中加网持续推动双边交流与公共对话，促进双方在全方位、多层次、宽领域的务实合作，不断提升国际传播能力与专业服务能级，全力打造兼具广泛影响力与高度公信力的跨国综合性交流平台。',
     ],
     servicesTitle: '核心产品与服务',
@@ -76,10 +76,10 @@ const copy = {
     ],
   },
   en: {
-    title: 'A comprehensive digital gateway connecting China and Canada',
+    title: "Canada's authoritative comprehensive digital portal",
     lead: 'Sharing bilateral information and quality resources through an integrated platform for news, targeted connections, and professional support.',
     introduction: [
-      'China Canada Net is a comprehensive digital gateway connecting China and Canada. It provides a one-stop platform for bilateral information and resource sharing, with a focus on politics, business, education, technology, culture, and social development.',
+      "China Canada Net is Canada's authoritative comprehensive digital portal. It provides a one-stop platform for China–Canada information and resource sharing, with a focus on politics, business, education, technology, culture, and social development.",
       'As a bridge between the two societies, China Canada Net promotes bilateral exchange, public dialogue, and practical cooperation while strengthening international communications and professional cross-border services.',
     ],
     servicesTitle: 'Core Products and Services',
