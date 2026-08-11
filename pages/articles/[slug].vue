@@ -4,7 +4,7 @@
       <NuxtLink class="category" :to="{ path: '/articles', query: { category: article.category.slug } }">{{ article.category.name }}</NuxtLink>
       <h1>{{ article.title }}</h1>
       <p class="dek">{{ article.summary }}</p>
-      <div class="byline"><span>文 / {{ article.author.name }}</span><time>{{ formatDate(article.publishedAt) }}</time></div>
+      <div class="byline"><span>文 / {{ article.byline }}</span><time>{{ formatDate(article.articleDate) }}</time></div>
     </header>
     <figure><img :src="article.coverImage" :alt="article.title" /></figure>
     <div class="story-body" v-html="bodyHtml" />

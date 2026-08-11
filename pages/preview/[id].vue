@@ -7,8 +7,8 @@
         <h1>{{ article.title }}</h1>
         <p class="dek">{{ article.summary }}</p>
         <div class="byline">
-          <span>文 / {{ article.author.name }}</span>
-          <time>{{ article.publishedAt ? formatDate(article.publishedAt) : '草稿预览' }}</time>
+          <span>文 / {{ article.byline }}</span>
+          <time>{{ formatDate(article.articleDate) }}</time>
         </div>
       </header>
       <figure v-if="article.coverImage">
