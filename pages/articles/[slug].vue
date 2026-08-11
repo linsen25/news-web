@@ -6,7 +6,7 @@
       <p class="dek">{{ article.summary }}</p>
       <div class="byline"><span>{{ language === 'zh' ? '文' : 'By' }} / {{ article.byline }}</span><time>{{ formatDate(article.articleDate) }}</time></div>
     </header>
-    <figure><img :src="article.coverImage" :alt="article.title" /></figure>
+    <figure v-if="article.coverImage"><img :src="article.coverImage" :alt="article.title" /></figure>
     <div class="story-body" v-html="bodyHtml" />
     <footer class="story-tags">
       <NuxtLink v-for="tag in article.tags" :key="tag.id" :to="{ path: '/articles', query: { tag: tag.slug } }"># {{ localizedName(tag) }}</NuxtLink>
