@@ -5,7 +5,8 @@ export default defineEventHandler(async () => {
   const config = useRuntimeConfig();
   try {
     return await $fetch<ArticleDTO[]>(`${config.apiBase}/articles/public`);
-  } catch {
+  } catch (error) {
+    if (!allowDevelopmentMockFallback()) throw productionApiError(error);
     return publicArticles.filter((article) => article.status === 'published');
   }
 });
