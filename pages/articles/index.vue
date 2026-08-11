@@ -6,8 +6,14 @@
       <p>从科技、国际到公共政策，记录正在发生的变化。</p>
     </header>
 
+    <div v-if="rawSearchKeyword" class="search-state">
+      <div><span>搜索结果</span><strong>“{{ rawSearchKeyword }}”</strong><small>共 {{ filteredArticles.length }} 篇</small></div>
+      <NuxtLink to="/articles">× 清除搜索</NuxtLink>
+    </div>
+
     <nav class="filters" aria-label="新闻分类">
-      <NuxtLink :to="allNewsLocation" :class="{ active: !selectedCategory }">全部</NuxtLink>
+      <span v-if="rawSearchKeyword" class="filter-context">在搜索结果中按分类筛选</span>
+      <NuxtLink :to="allNewsLocation" :class="{ active: !selectedCategory && !rawSearchKeyword }">全部</NuxtLink>
       <NuxtLink
         v-for="category in categories"
         :key="category.id"
@@ -49,6 +55,7 @@ const [{ data: articles }, { data: categories }, { data: tags }] = await Promise
 
 const selectedCategory = computed(() => String(route.query.category || ''));
 const selectedTag = computed(() => String(route.query.tag || ''));
+const rawSearchKeyword = computed(() => String(route.query.q || '').trim());
 const searchKeyword = computed(() => String(route.query.q || '').trim().toLocaleLowerCase());
 const displayedTags = computed(() => {
   if (!selectedCategory.value) return tags.value;
@@ -97,14 +104,12 @@ const allNewsLocation = computed(() => ({
   path: '/articles',
   query: {
     ...(selectedTag.value ? { tag: selectedTag.value } : {}),
-    ...(searchKeyword.value ? { q: route.query.q as string } : {}),
   },
 }));
 const allTagsLocation = computed(() => ({
   path: '/articles',
   query: {
     ...(selectedCategory.value ? { category: selectedCategory.value } : {}),
-    ...(searchKeyword.value ? { q: route.query.q as string } : {}),
   },
 }));
 const categoryLocation = (slug: string) => ({
@@ -112,7 +117,6 @@ const categoryLocation = (slug: string) => ({
   query: {
     category: slug,
     ...(tags.value.some((tag) => tag.slug === selectedTag.value && tag.categoryId === categories.value.find((category) => category.slug === slug)?.id) ? { tag: selectedTag.value } : {}),
-    ...(searchKeyword.value ? { q: route.query.q as string } : {}),
   },
 });
 const tagLocation = (slug: string) => ({
@@ -120,7 +124,6 @@ const tagLocation = (slug: string) => ({
   query: {
     ...(selectedCategory.value ? { category: selectedCategory.value } : {}),
     tag: slug,
-    ...(searchKeyword.value ? { q: route.query.q as string } : {}),
   },
 });
 
