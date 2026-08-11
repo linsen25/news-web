@@ -58,6 +58,10 @@ a.category:hover { text-decoration:underline; }
 .filters { display:flex; flex-wrap:wrap; gap:10px; padding:30px 0; border-bottom:2px solid var(--ink); }
 .filters a { border:1px solid var(--line); background:transparent; border-radius:99px; padding:7px 15px; }
 .filters a.active { background:var(--ink); color:white; }
+.tag-filters { display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:18px 0; border-bottom:1px solid var(--line); }
+.tag-filters>span { margin-right:4px; color:var(--muted); font-size:12px; font-weight:600; }
+.tag-filters a { color:var(--red); padding:5px 9px; border-radius:5px; font-size:13px; }
+.tag-filters a:hover,.tag-filters a.active { background:#ebe6db; }
 .empty-results { padding:55px 0; color:var(--muted); text-align:center; }
 .archive-list .article-card { display:grid; grid-template-columns:260px 1fr; gap:28px; padding:28px 0; border-bottom:1px solid var(--line); }
 .archive-list .card-image img { height:160px; }

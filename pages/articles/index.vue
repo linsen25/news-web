@@ -6,14 +6,25 @@
       <p>从科技、国际到公共政策，记录正在发生的变化。</p>
     </header>
 
-    <nav class="filters" aria-label="文章标签">
-      <NuxtLink to="/articles" :class="{ active: !selectedTag }">全部</NuxtLink>
+    <nav class="filters" aria-label="新闻分类">
+      <NuxtLink :to="allNewsLocation" :class="{ active: !selectedCategory }">全部</NuxtLink>
+      <NuxtLink
+        v-for="category in categories"
+        :key="category.id"
+        :to="categoryLocation(category.slug)"
+        :class="{ active: selectedCategory === category.slug }"
+      >{{ category.name }}</NuxtLink>
+    </nav>
+
+    <nav v-if="tags.length" class="tag-filters" aria-label="文章标签">
+      <span>按标签筛选</span>
+      <NuxtLink :to="allTagsLocation" :class="{ active: !selectedTag }">全部标签</NuxtLink>
       <NuxtLink
         v-for="tag in tags"
         :key="tag.id"
-        :to="{ path: '/articles', query: { tag: tag.slug } }"
+        :to="tagLocation(tag.slug)"
         :class="{ active: selectedTag === tag.slug }"
-      >{{ tag.name }}</NuxtLink>
+      ># {{ tag.name }}</NuxtLink>
     </nav>
 
     <div v-if="filteredArticles.length" class="archive-list">
@@ -75,6 +86,37 @@ const filteredArticles = computed(() => {
     ].join(' ').toLocaleLowerCase().includes(searchKeyword.value));
   }
   return result;
+});
+
+const allNewsLocation = computed(() => ({
+  path: '/articles',
+  query: {
+    ...(selectedTag.value ? { tag: selectedTag.value } : {}),
+    ...(searchKeyword.value ? { q: route.query.q as string } : {}),
+  },
+}));
+const allTagsLocation = computed(() => ({
+  path: '/articles',
+  query: {
+    ...(selectedCategory.value ? { category: selectedCategory.value } : {}),
+    ...(searchKeyword.value ? { q: route.query.q as string } : {}),
+  },
+}));
+const categoryLocation = (slug: string) => ({
+  path: '/articles',
+  query: {
+    category: slug,
+    ...(selectedTag.value ? { tag: selectedTag.value } : {}),
+    ...(searchKeyword.value ? { q: route.query.q as string } : {}),
+  },
+});
+const tagLocation = (slug: string) => ({
+  path: '/articles',
+  query: {
+    ...(selectedCategory.value ? { category: selectedCategory.value } : {}),
+    tag: slug,
+    ...(searchKeyword.value ? { q: route.query.q as string } : {}),
+  },
 });
 
 useHead({ title: '全部新闻' });
