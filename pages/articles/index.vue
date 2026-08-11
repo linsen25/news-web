@@ -48,6 +48,7 @@ const [{ data: articles }, { data: categories }, { data: tags }] = await Promise
 
 const selectedCategory = computed(() => String(route.query.category || ''));
 const selectedTag = computed(() => String(route.query.tag || ''));
+const searchKeyword = computed(() => String(route.query.q || '').trim().toLocaleLowerCase());
 
 const descendantIds = (selected: PublicCategory) => {
   const ids = new Set<number>([selected.id]);
@@ -74,6 +75,14 @@ const filteredArticles = computed(() => {
   }
   if (selectedTag.value) {
     result = result.filter((article) => article.tags.some((tag) => tag.slug === selectedTag.value));
+  }
+  if (searchKeyword.value) {
+    result = result.filter((article) => [
+      article.title,
+      article.summary,
+      article.category.name,
+      ...article.tags.map((tag) => tag.name),
+    ].join(' ').toLocaleLowerCase().includes(searchKeyword.value));
   }
   return result;
 });
