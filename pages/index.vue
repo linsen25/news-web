@@ -41,10 +41,17 @@ const copy = {
 } as const;
 const text = computed(() => copy[language.value]);
 const stableScore = (value: string) => [...value].reduce((score, character) => ((score * 31) + character.charCodeAt(0)) >>> 0, 7);
-const editorialOrder = (items: ArticleDTO[]) => [...items].sort((a, b) =>
-  (b.viewCount - a.viewCount) || (stableScore(a.id) - stableScore(b.id)),
+const audienceScore = (article: ArticleDTO) => {
+  const ageDays = Math.max(0, (Date.now() - new Date(article.publishedAt || article.articleDate).getTime()) / 86_400_000);
+  return article.viewCount / Math.sqrt(ageDays + 1);
+};
+const editorialOrder = (items: ArticleDTO[], preferHeadline = false) => [...items].sort((a, b) =>
+  (preferHeadline ? Number(Boolean(b.isHeadline)) - Number(Boolean(a.isHeadline)) : 0)
+  || ((b.homepagePriority ?? 0) - (a.homepagePriority ?? 0))
+  || (audienceScore(b) - audienceScore(a))
+  || (stableScore(a.id) - stableScore(b.id)),
 );
-const headlineArticles = computed(() => editorialOrder(articles.value).slice(0, 5));
+const headlineArticles = computed(() => editorialOrder(articles.value, true).slice(0, 5));
 const channelGroups = computed(() => categories.value.map((category) => ({
   category,
   articles: editorialOrder(articles.value.filter((article) => article.category.id === category.id)),

@@ -1,7 +1,7 @@
 <template>
   <article class="article-card" :class="{ featured }">
     <NuxtLink :to="`/articles/${article.slug}`" class="card-image" :class="{ 'image-placeholder': !cardImage }">
-      <img v-if="cardImage" :src="cardImage" :alt="article.title" />
+      <img v-if="cardImage" :src="cardImage" :alt="article.title" :style="imagePosition" />
       <span v-else>CHINA CANADA NET</span>
     </NuxtLink>
     <div class="card-copy">
@@ -26,6 +26,7 @@ const findFirstImage = (nodes: ArticleDTO['content']['content'] = []): string =>
   return '';
 };
 const cardImage = computed(() => props.article.coverImage || findFirstImage(props.article.content.content));
+const imagePosition = computed(() => ({ objectPosition: `${props.article.coverFocalX ?? 50}% ${props.article.coverFocalY ?? 50}%` }));
 const localizedName = (item: { name: string; nameEn?: string }) => language.value === 'en' && item.nameEn ? item.nameEn : item.name;
 const formatDate = (date: string | null) => date
   ? new Intl.DateTimeFormat(language.value === 'zh' ? 'zh-CN' : 'en-CA', { month: 'long', day: 'numeric' }).format(new Date(date))

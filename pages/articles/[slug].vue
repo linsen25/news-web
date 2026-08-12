@@ -17,7 +17,7 @@
       <p class="dek">{{ publishedArticle.summary }}</p>
       <div class="byline"><span v-if="publishedArticle.byline">{{ language === 'zh' ? '文' : 'By' }} / {{ publishedArticle.byline }}</span><time>{{ formatDate(publishedArticle.articleDate) }}</time></div>
     </header>
-    <figure v-if="publishedArticle.coverImage"><img :src="publishedArticle.coverImage" :alt="publishedArticle.title" /></figure>
+    <figure v-if="publishedArticle.coverImage"><img :src="publishedArticle.coverImage" :alt="publishedArticle.title" :style="coverPosition" /></figure>
     <div class="story-body" v-html="bodyHtml" />
     <footer class="story-tags">
       <NuxtLink v-for="tag in publishedArticle.tags" :key="tag.id" :to="{ path: `/category/${publishedArticle.category.slug}`, query: { tag: tag.slug } }"># {{ localizedName(tag) }}</NuxtLink>
@@ -57,6 +57,7 @@ const [{ data: article }, { data: allArticles }] = await Promise.all([
 if (!article.value) throw createError({ statusCode: 404, statusMessage: '文章不存在' });
 const withdrawalNotice = computed(() => article.value && 'withdrawn' in article.value ? article.value : null);
 const publishedArticle = computed(() => article.value && !('withdrawn' in article.value) ? article.value : null);
+const coverPosition = computed(() => publishedArticle.value ? ({ objectPosition: `${publishedArticle.value.coverFocalX ?? 50}% ${publishedArticle.value.coverFocalY ?? 50}%` }) : undefined);
 const relatedArticles = computed(() => publishedArticle.value
   ? allArticles.value.filter((item) => item.id !== publishedArticle.value?.id && item.category.id === publishedArticle.value?.category.id).slice(0, 6)
   : []);

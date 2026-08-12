@@ -7,7 +7,7 @@
     <div class="channel-stories">
       <article v-for="(article, index) in visibleArticles" :key="article.id" class="channel-story" :class="{ lead: index === 0, secondary: index === 1 }">
         <NuxtLink class="card-image" :to="`/articles/${article.slug}`">
-          <img v-if="articleImage(article)" :src="articleImage(article)" :alt="article.title">
+          <img v-if="articleImage(article)" :src="articleImage(article)" :alt="article.title" :style="imagePosition(article)">
           <span v-else>CHINA CANADA NET</span>
         </NuxtLink>
         <div>
@@ -34,6 +34,7 @@ const visibleArticles = computed(() => props.articles.slice(0, storyLimits[layou
 const language = useCookie<'zh' | 'en'>('site-language', { default: () => 'zh' });
 const localizedName = (item: { name: string; nameEn?: string }) => language.value === 'en' && item.nameEn ? item.nameEn : item.name;
 const articleImage = (article: ArticleDTO) => article.coverImage || '';
+const imagePosition = (article: ArticleDTO) => ({ objectPosition: `${article.coverFocalX ?? 50}% ${article.coverFocalY ?? 50}%` });
 const formatDate = (date: string | null) => date
   ? new Intl.DateTimeFormat(language.value === 'zh' ? 'zh-CN' : 'en-CA', { month: 'long', day: 'numeric' }).format(new Date(date))
   : '';

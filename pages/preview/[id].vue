@@ -12,7 +12,7 @@
         </div>
       </header>
       <figure v-if="article.coverImage">
-        <img :src="article.coverImage" :alt="article.title" />
+        <img :src="article.coverImage" :alt="article.title" :style="{ objectPosition: `${article.coverFocalX ?? 50}% ${article.coverFocalY ?? 50}%` }" />
         <figcaption>文章封面预览</figcaption>
       </figure>
       <div class="story-body" v-html="bodyHtml" />
