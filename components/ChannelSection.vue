@@ -1,11 +1,11 @@
 <template>
-  <section v-if="articles.length" class="channel-section" :class="`channel-layout-${variant}`">
+  <section v-if="articles.length" class="channel-section" :class="`channel-layout-${layoutVariant}`">
     <header class="channel-heading">
       <NuxtLink :to="`/category/${category.slug}`">{{ localizedName(category) }}</NuxtLink>
       <NuxtLink :to="`/category/${category.slug}`">{{ language === 'zh' ? '查看全部' : 'View all' }} →</NuxtLink>
     </header>
     <div class="channel-stories">
-      <article v-for="(article, index) in articles.slice(0, 5)" :key="article.id" class="channel-story" :class="{ lead: index === 0, secondary: index === 1 }">
+      <article v-for="(article, index) in visibleArticles" :key="article.id" class="channel-story" :class="{ lead: index === 0, secondary: index === 1 }">
         <NuxtLink class="card-image" :to="`/articles/${article.slug}`">
           <img v-if="articleImage(article)" :src="articleImage(article)" :alt="article.title">
           <span v-else>CHINA CANADA NET</span>
@@ -27,7 +27,10 @@
 import type { ArticleDTO } from '~/types/article';
 import type { PublicCategory } from '~/composables/usePublicCatalog';
 
-defineProps<{ category: PublicCategory; articles: ArticleDTO[]; variant: number }>();
+const props = defineProps<{ category: PublicCategory; articles: ArticleDTO[]; variant: number }>();
+const layoutVariant = computed(() => props.variant % 5);
+const storyLimits = [5, 4, 3, 5, 4];
+const visibleArticles = computed(() => props.articles.slice(0, storyLimits[layoutVariant.value]));
 const language = useCookie<'zh' | 'en'>('site-language', { default: () => 'zh' });
 const localizedName = (item: { name: string; nameEn?: string }) => language.value === 'en' && item.nameEn ? item.nameEn : item.name;
 const articleImage = (article: ArticleDTO) => article.coverImage || '';
