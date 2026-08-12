@@ -1,10 +1,10 @@
 <template>
   <div>
-    <header class="site-header" @mouseleave="scheduleChannelClose">
+    <header class="site-header" @mouseenter="openAllTags" @mouseleave="scheduleChannelClose">
       <div class="header-inner">
         <NuxtLink class="logo" to="/">中加网<span>中加新闻</span></NuxtLink>
         <nav class="primary-nav" aria-label="Primary navigation">
-          <NuxtLink to="/">{{ text.home }}</NuxtLink>
+          <NuxtLink to="/" @mouseenter="showAllTags">{{ text.home }}</NuxtLink>
           <NuxtLink
             v-for="category in navigationCategories"
             :key="category.id"
@@ -12,9 +12,8 @@
             @mouseenter="openChannel(category.id)"
             @focus="openChannel(category.id)"
           >{{ localizedName(category) }}</NuxtLink>
-          <NuxtLink to="/articles">{{ text.news }}</NuxtLink>
-          <NuxtLink to="/subscribe">{{ text.subscribe }}</NuxtLink>
-          <NuxtLink to="/about">{{ text.about }}</NuxtLink>
+          <NuxtLink to="/subscribe" @mouseenter="showAllTags">{{ text.subscribe }}</NuxtLink>
+          <NuxtLink to="/about" @mouseenter="showAllTags">{{ text.about }}</NuxtLink>
         </nav>
         <div class="header-tools">
           <form class="header-search" role="search" @submit.prevent="search" @focusin="searchOpen = true" @focusout="closeSearch">
@@ -54,20 +53,20 @@
         </div>
       </div>
       <div
-        v-if="activeNavigationCategory"
         class="channel-drawer"
+        :class="{ open: channelExpanded }"
         @mouseenter="cancelChannelClose"
         @mouseleave="scheduleChannelClose"
       >
         <div class="channel-drawer-inner">
-          <strong>{{ localizedName(activeNavigationCategory) }}</strong>
-          <nav :aria-label="`${localizedName(activeNavigationCategory)} tags`">
+          <strong>{{ activeNavigationCategory ? localizedName(activeNavigationCategory) : (language === 'zh' ? '探索主题' : 'Explore topics') }}</strong>
+          <nav :aria-label="activeNavigationCategory ? `${localizedName(activeNavigationCategory)} tags` : 'All tags'">
             <NuxtLink
-              v-for="tag in activeNavigationTags"
+              v-for="tag in visibleNavigationTags"
               :key="tag.id"
-              :to="{ path: `/category/${activeNavigationCategory.slug}`, query: { tag: tag.slug } }"
+              :to="tagLocation(tag)"
             >{{ localizedName(tag) }}</NuxtLink>
-            <NuxtLink class="channel-drawer-all" :to="`/category/${activeNavigationCategory.slug}`">
+            <NuxtLink v-if="activeNavigationCategory" class="channel-drawer-all" :to="`/category/${activeNavigationCategory.slug}`">
               {{ language === 'zh' ? '进入频道' : 'Visit channel' }} →
             </NuxtLink>
           </nav>
@@ -122,14 +121,22 @@ const [{ data: navigationCategories }, { data: navigationTags }] = await Promise
   useAsyncData('navigation-tags', catalog.tags, { default: () => [] }),
 ]);
 const activeCategoryId = ref('');
+const channelExpanded = ref(false);
 let channelCloseTimer: ReturnType<typeof setTimeout> | undefined;
 const activeNavigationCategory = computed(() => navigationCategories.value.find((category) => category.id === activeCategoryId.value));
 const activeNavigationTags = computed(() => navigationTags.value.filter((tag) => tag.categoryId === activeCategoryId.value));
+const visibleNavigationTags = computed(() => activeNavigationCategory.value ? activeNavigationTags.value : navigationTags.value);
 const cancelChannelClose = () => { if (channelCloseTimer) clearTimeout(channelCloseTimer); };
-const openChannel = (categoryId: string) => { cancelChannelClose(); activeCategoryId.value = categoryId; };
+const openAllTags = () => { cancelChannelClose(); channelExpanded.value = true; };
+const showAllTags = () => { activeCategoryId.value = ''; channelExpanded.value = true; };
+const openChannel = (categoryId: string) => { cancelChannelClose(); channelExpanded.value = true; activeCategoryId.value = categoryId; };
+const tagLocation = (tag: { slug: string; categoryId?: string | null }) => {
+  const category = navigationCategories.value.find((item) => item.id === tag.categoryId);
+  return { path: category ? `/category/${category.slug}` : '/search', query: { tag: tag.slug } };
+};
 const scheduleChannelClose = () => {
   cancelChannelClose();
-  channelCloseTimer = setTimeout(() => { activeCategoryId.value = ''; }, 180);
+  channelCloseTimer = setTimeout(() => { channelExpanded.value = false; activeCategoryId.value = ''; }, 220);
 };
 const copy = {
   zh: {

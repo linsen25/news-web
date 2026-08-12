@@ -5,7 +5,7 @@
       <span v-else>CHINA CANADA NET</span>
     </NuxtLink>
     <div class="card-copy">
-      <NuxtLink class="category" :to="{ path: '/articles', query: { category: article.category.slug } }">{{ localizedName(article.category) }}</NuxtLink>
+      <NuxtLink class="category" :to="`/category/${article.category.slug}`">{{ localizedName(article.category) }}</NuxtLink>
       <h2><NuxtLink :to="`/articles/${article.slug}`">{{ article.title }}</NuxtLink></h2>
       <p>{{ article.summary }}</p>
       <small><template v-if="article.byline">{{ article.byline }} · </template>{{ formatDate(article.articleDate) }}</small>

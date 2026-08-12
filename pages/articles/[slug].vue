@@ -3,16 +3,16 @@
     <nav class="story-breadcrumb" :aria-label="language === 'zh' ? '文章层级导航' : 'Breadcrumb'">
       <NuxtLink to="/">{{ language === 'zh' ? '首页' : 'Home' }}</NuxtLink>
       <span aria-hidden="true">›</span>
-      <NuxtLink :to="{ path: '/articles', query: { category: publishedArticle.category.slug } }">{{ localizedName(publishedArticle.category) }}</NuxtLink>
+      <NuxtLink :to="`/category/${publishedArticle.category.slug}`">{{ localizedName(publishedArticle.category) }}</NuxtLink>
       <template v-if="publishedArticle.tags.length">
         <span aria-hidden="true">›</span>
-        <NuxtLink :to="{ path: '/articles', query: { category: publishedArticle.category.slug, tag: publishedArticle.tags[0].slug } }">{{ localizedName(publishedArticle.tags[0]) }}</NuxtLink>
+        <NuxtLink :to="{ path: `/category/${publishedArticle.category.slug}`, query: { tag: publishedArticle.tags[0].slug } }">{{ localizedName(publishedArticle.tags[0]) }}</NuxtLink>
       </template>
       <span aria-hidden="true">›</span>
       <span class="current" aria-current="page">{{ publishedArticle.title }}</span>
     </nav>
     <header class="story-header">
-      <NuxtLink class="category" :to="{ path: '/articles', query: { category: publishedArticle.category.slug } }">{{ localizedName(publishedArticle.category) }}</NuxtLink>
+      <NuxtLink class="category" :to="`/category/${publishedArticle.category.slug}`">{{ localizedName(publishedArticle.category) }}</NuxtLink>
       <h1>{{ publishedArticle.title }}</h1>
       <p class="dek">{{ publishedArticle.summary }}</p>
       <div class="byline"><span v-if="publishedArticle.byline">{{ language === 'zh' ? '文' : 'By' }} / {{ publishedArticle.byline }}</span><time>{{ formatDate(publishedArticle.articleDate) }}</time></div>
@@ -20,7 +20,7 @@
     <figure v-if="publishedArticle.coverImage"><img :src="publishedArticle.coverImage" :alt="publishedArticle.title" /></figure>
     <div class="story-body" v-html="bodyHtml" />
     <footer class="story-tags">
-      <NuxtLink v-for="tag in publishedArticle.tags" :key="tag.id" :to="{ path: '/articles', query: { tag: tag.slug } }"># {{ localizedName(tag) }}</NuxtLink>
+      <NuxtLink v-for="tag in publishedArticle.tags" :key="tag.id" :to="{ path: `/category/${publishedArticle.category.slug}`, query: { tag: tag.slug } }"># {{ localizedName(tag) }}</NuxtLink>
     </footer>
     <section class="story-recommendations">
       <div class="up-next">
