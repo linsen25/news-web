@@ -1,5 +1,16 @@
 <template>
   <article v-if="publishedArticle" class="story">
+    <nav class="story-breadcrumb" :aria-label="language === 'zh' ? '文章层级导航' : 'Breadcrumb'">
+      <NuxtLink to="/">{{ language === 'zh' ? '首页' : 'Home' }}</NuxtLink>
+      <span aria-hidden="true">›</span>
+      <NuxtLink :to="{ path: '/articles', query: { category: publishedArticle.category.slug } }">{{ localizedName(publishedArticle.category) }}</NuxtLink>
+      <template v-if="publishedArticle.tags.length">
+        <span aria-hidden="true">›</span>
+        <NuxtLink :to="{ path: '/articles', query: { category: publishedArticle.category.slug, tag: publishedArticle.tags[0].slug } }">{{ localizedName(publishedArticle.tags[0]) }}</NuxtLink>
+      </template>
+      <span aria-hidden="true">›</span>
+      <span class="current" aria-current="page">{{ publishedArticle.title }}</span>
+    </nav>
     <header class="story-header">
       <NuxtLink class="category" :to="{ path: '/articles', query: { category: publishedArticle.category.slug } }">{{ localizedName(publishedArticle.category) }}</NuxtLink>
       <h1>{{ publishedArticle.title }}</h1>

@@ -5,6 +5,7 @@
 html { scroll-behavior:smooth; }
 body { margin:0; background:var(--cream); color:var(--ink); font-family:'Noto Sans SC',sans-serif; }
 a { color:inherit; text-decoration:none; }
+a:not(.card-image):hover { text-decoration:underline; text-underline-offset:3px; }
 img { width:100%; display:block; object-fit:cover; }
 button { font:inherit; }
 .site-header { width:100%; border-bottom:1px solid var(--ink); background:rgba(246,242,233,.96); }
@@ -36,6 +37,9 @@ button { font:inherit; }
 .edition p { margin:0; font:600 20px 'Noto Serif SC'; }
 .article-card.featured { display:grid; grid-template-columns:1.35fr 1fr; gap:44px; padding:42px 0 50px; border-bottom:2px solid var(--ink); }
 .featured .card-image img { height:470px; }
+.card-image { display:block; overflow:hidden; }
+.card-image img { transition:transform .35s ease; }
+.card-image:hover img { transform:scale(1.035); }
 .card-image.image-placeholder { min-height:260px; display:grid; place-items:center; background:#e7e1d5; color:var(--ink); letter-spacing:.16em; font:700 14px/1.4 Arial,sans-serif; }
 .featured .card-image.image-placeholder { min-height:470px; }
 .featured .card-copy { align-self:center; }
@@ -85,6 +89,9 @@ a.category:hover { text-decoration:underline; }
 .archive-list .card-image img { height:160px; }
 .archive-list .card-copy h2 { margin-top:5px; }
 .story { max-width:1180px; margin:auto; padding:75px 24px 90px; }
+.story-breadcrumb { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0 0 38px; color:var(--muted); font-size:12px; }
+.story-breadcrumb a { color:var(--ink); }
+.story-breadcrumb .current { max-width:min(520px,60vw); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .story-header { max-width:900px; margin:auto; text-align:center; }
 .story-header h1 { font:900 58px/1.22 'Noto Serif SC'; margin:18px 0; letter-spacing:-2px; }
 .dek { max-width:720px; margin:0 auto 25px; color:#555b56; font:600 20px/1.7 'Noto Serif SC'; }
