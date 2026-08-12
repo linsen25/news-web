@@ -5,7 +5,7 @@
       <NuxtLink :to="`/category/${category.slug}`">{{ language === 'zh' ? '查看全部' : 'View all' }} →</NuxtLink>
     </header>
     <div class="channel-stories">
-      <article v-for="(article, index) in articles.slice(0, 4)" :key="article.id" class="channel-story" :class="{ lead: index === 0 }">
+      <article v-for="(article, index) in articles.slice(0, 5)" :key="article.id" class="channel-story" :class="{ lead: index === 0, secondary: index === 1 }">
         <NuxtLink class="card-image" :to="`/articles/${article.slug}`">
           <img v-if="articleImage(article)" :src="articleImage(article)" :alt="article.title">
           <span v-else>CHINA CANADA NET</span>

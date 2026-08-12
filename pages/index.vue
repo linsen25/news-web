@@ -7,7 +7,7 @@
       <div class="headline-grid">
         <ArticleCard :article="headlineArticles[0]" featured />
         <div class="headline-side">
-          <ArticleCard v-for="article in headlineArticles.slice(1, 4)" :key="article.id" :article="article" />
+          <ArticleCard v-for="article in headlineArticles.slice(1, 5)" :key="article.id" :article="article" />
         </div>
       </div>
     </section>
@@ -44,7 +44,7 @@ const stableScore = (value: string) => [...value].reduce((score, character) => (
 const editorialOrder = (items: ArticleDTO[]) => [...items].sort((a, b) =>
   (b.viewCount - a.viewCount) || (stableScore(a.id) - stableScore(b.id)),
 );
-const headlineArticles = computed(() => editorialOrder(articles.value).slice(0, 4));
+const headlineArticles = computed(() => editorialOrder(articles.value).slice(0, 5));
 const channelGroups = computed(() => categories.value.map((category) => ({
   category,
   articles: editorialOrder(articles.value.filter((article) => article.category.id === category.id)),
