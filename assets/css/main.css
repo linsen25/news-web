@@ -11,6 +11,7 @@ button { font:inherit; }
 .site-header { position:relative; width:100%; border-bottom:1px solid var(--ink); background:rgba(246,242,233,.96); }
 .header-inner { max-width:1480px; margin:auto; min-height:96px; display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:28px; padding:15px 24px; }
 .logo { font:900 27px 'Noto Serif SC'; letter-spacing:-1px; }
+.logo:hover { text-decoration:none; }
 .logo span { display:block; color:var(--red); font:600 10px 'Noto Sans SC'; letter-spacing:5px; }
 .primary-nav { display:flex; justify-content:center; gap:18px; font-size:13px; font-weight:600; white-space:nowrap; }
 .primary-nav a.router-link-active { color:var(--red); }
