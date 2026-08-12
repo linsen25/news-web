@@ -22,6 +22,20 @@
     <footer class="story-tags">
       <NuxtLink v-for="tag in publishedArticle.tags" :key="tag.id" :to="{ path: '/articles', query: { tag: tag.slug } }"># {{ localizedName(tag) }}</NuxtLink>
     </footer>
+    <section class="story-recommendations">
+      <div class="up-next">
+        <header><h2>{{ language === 'zh' ? '接下来阅读' : 'Up next' }}</h2></header>
+        <div class="recommendation-grid">
+          <ArticleCard v-for="item in relatedArticles" :key="item.id" :article="item" />
+        </div>
+      </div>
+      <RankedStories
+        :title="language === 'zh' ? '热门推荐' : 'Most popular'"
+        :articles="popularArticles"
+        :limit="6"
+        compact
+      />
+    </section>
   </article>
   <article v-else-if="withdrawalNotice" class="story withdrawal-notice">
     <header><p class="eyebrow">ARTICLE WITHDRAWN</p><h1>{{ withdrawalNotice.title }}</h1><p>{{ language === 'zh' ? '本文已撤回' : 'This article has been withdrawn' }}</p></header>
@@ -35,11 +49,20 @@ const route = useRoute();
 const language = useCookie<'zh' | 'en'>('site-language', { default: () => 'zh' });
 const localizedName = (item: { name: string; nameEn?: string }) => language.value === 'en' && item.nameEn ? item.nameEn : item.name;
 const slug = String(route.params.slug);
-const { get } = usePublicArticles();
-const { data: article } = await useAsyncData(`public-article-${slug}`, () => get(slug));
+const { get, list } = usePublicArticles();
+const [{ data: article }, { data: allArticles }] = await Promise.all([
+  useAsyncData(`public-article-${slug}`, () => get(slug)),
+  useAsyncData('story-recommendation-articles', list, { default: () => [] }),
+]);
 if (!article.value) throw createError({ statusCode: 404, statusMessage: '文章不存在' });
 const withdrawalNotice = computed(() => article.value && 'withdrawn' in article.value ? article.value : null);
 const publishedArticle = computed(() => article.value && !('withdrawn' in article.value) ? article.value : null);
+const relatedArticles = computed(() => publishedArticle.value
+  ? allArticles.value.filter((item) => item.id !== publishedArticle.value?.id && item.category.id === publishedArticle.value?.category.id).slice(0, 6)
+  : []);
+const popularArticles = computed(() => allArticles.value
+  .filter((item) => item.id !== publishedArticle.value?.id)
+  .sort((a, b) => new Date(b.publishedAt || b.articleDate || 0).getTime() - new Date(a.publishedAt || a.articleDate || 0).getTime()));
 
 useSeoMeta({
   title: () => publishedArticle.value?.metaTitle || article.value?.title || '新闻文章',

@@ -1,10 +1,17 @@
 <template>
   <div>
-    <header class="site-header">
+    <header class="site-header" @mouseleave="scheduleChannelClose">
       <div class="header-inner">
         <NuxtLink class="logo" to="/">中加网<span>中加新闻</span></NuxtLink>
-        <nav>
+        <nav class="primary-nav" aria-label="Primary navigation">
           <NuxtLink to="/">{{ text.home }}</NuxtLink>
+          <NuxtLink
+            v-for="category in navigationCategories"
+            :key="category.id"
+            :to="`/category/${category.slug}`"
+            @mouseenter="openChannel(category.id)"
+            @focus="openChannel(category.id)"
+          >{{ localizedName(category) }}</NuxtLink>
           <NuxtLink to="/articles">{{ text.news }}</NuxtLink>
           <NuxtLink to="/subscribe">{{ text.subscribe }}</NuxtLink>
           <NuxtLink to="/about">{{ text.about }}</NuxtLink>
@@ -44,6 +51,26 @@
           <button class="language-toggle" type="button" @click="toggleLanguage">
             {{ language === 'zh' ? 'EN' : '中文' }}
           </button>
+        </div>
+      </div>
+      <div
+        v-if="activeNavigationCategory"
+        class="channel-drawer"
+        @mouseenter="cancelChannelClose"
+        @mouseleave="scheduleChannelClose"
+      >
+        <div class="channel-drawer-inner">
+          <strong>{{ localizedName(activeNavigationCategory) }}</strong>
+          <nav :aria-label="`${localizedName(activeNavigationCategory)} tags`">
+            <NuxtLink
+              v-for="tag in activeNavigationTags"
+              :key="tag.id"
+              :to="{ path: `/category/${activeNavigationCategory.slug}`, query: { tag: tag.slug } }"
+            >{{ localizedName(tag) }}</NuxtLink>
+            <NuxtLink class="channel-drawer-all" :to="`/category/${activeNavigationCategory.slug}`">
+              {{ language === 'zh' ? '进入频道' : 'Visit channel' }} →
+            </NuxtLink>
+          </nav>
         </div>
       </div>
     </header>
@@ -88,7 +115,22 @@ const keyword = ref('');
 const searchOpen = ref(false);
 const activeSuggestion = ref(-1);
 const { list } = usePublicArticles();
+const catalog = usePublicCatalog();
 const { data: searchableArticles } = await useAsyncData('header-search-articles', list, { default: () => [] });
+const [{ data: navigationCategories }, { data: navigationTags }] = await Promise.all([
+  useAsyncData('navigation-categories', catalog.categories, { default: () => [] }),
+  useAsyncData('navigation-tags', catalog.tags, { default: () => [] }),
+]);
+const activeCategoryId = ref('');
+let channelCloseTimer: ReturnType<typeof setTimeout> | undefined;
+const activeNavigationCategory = computed(() => navigationCategories.value.find((category) => category.id === activeCategoryId.value));
+const activeNavigationTags = computed(() => navigationTags.value.filter((tag) => tag.categoryId === activeCategoryId.value));
+const cancelChannelClose = () => { if (channelCloseTimer) clearTimeout(channelCloseTimer); };
+const openChannel = (categoryId: string) => { cancelChannelClose(); activeCategoryId.value = categoryId; };
+const scheduleChannelClose = () => {
+  cancelChannelClose();
+  channelCloseTimer = setTimeout(() => { activeCategoryId.value = ''; }, 180);
+};
 const copy = {
   zh: {
     home: '首页', news: '全部新闻', subscribe: '订阅服务', about: '关于', search: '搜索新闻', submitSearch: '提交搜索', clearSearch: '清除搜索', viewResults: '查看全部搜索结果 →', noSuggestions: '没有匹配的文章',
@@ -135,7 +177,7 @@ const closeSearch = () => { window.setTimeout(() => { searchOpen.value = false; 
 const clearSearch = async () => {
   keyword.value = '';
   searchOpen.value = false;
-  if (route.path === '/articles' && route.query.q) await navigateTo('/articles');
+  if (route.path === '/search' && route.query.q) await navigateTo('/search');
 };
 const search = async () => {
   const q = keyword.value.trim();
@@ -144,7 +186,7 @@ const search = async () => {
     return;
   }
   searchOpen.value = false;
-  await navigateTo({ path: '/articles', query: q ? { q } : {} });
+  await navigateTo({ path: '/search', query: q ? { q } : {} });
 };
 watch(() => route.fullPath, () => {
   if (!route.query.q) keyword.value = '';
