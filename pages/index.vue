@@ -28,11 +28,14 @@
 
 <script setup lang="ts">
 import type { ArticleDTO } from '~/types/article';
+import type { components } from '~/types/generated/api';
+type HomepageLayoutDTO = components['schemas']['HomepageLayoutDto'];
 const { list } = usePublicArticles();
 const catalog = usePublicCatalog();
-const [{ data: articles }, { data: categories }] = await Promise.all([
+const [{ data: articles }, { data: categories }, { data: homepageLayout }] = await Promise.all([
   useAsyncData('home-articles', list, { default: () => [] }),
   useAsyncData('home-categories', catalog.categories, { default: () => [] }),
+  useAsyncData('home-editorial-layout', () => $fetch<HomepageLayoutDTO>('/api/homepage'), { default: () => ({ slots: [] }) }),
 ]);
 const language = useCookie<'zh' | 'en'>('site-language', { default: () => 'zh' });
 const copy = {
@@ -51,10 +54,24 @@ const editorialOrder = (items: ArticleDTO[], preferHeadline = false) => [...item
   || (audienceScore(b) - audienceScore(a))
   || (stableScore(a.id) - stableScore(b.id)),
 );
-const headlineArticles = computed(() => editorialOrder(articles.value, true).slice(0, 5));
+const uniqueArticles = (preferred: ArticleDTO[], fallback: ArticleDTO[], limit: number) => {
+  const seen = new Set<string>();
+  return [...preferred, ...fallback].filter((article) => !seen.has(article.id) && Boolean(seen.add(article.id))).slice(0, limit);
+};
+const headlineArticles = computed(() => {
+  const slots = homepageLayout.value.slots
+    .filter((slot) => slot.section === 'headline_main' || slot.section === 'headline_secondary')
+    .sort((a, b) => (a.section === 'headline_main' ? -1 : b.section === 'headline_main' ? 1 : a.position - b.position))
+    .map((slot) => slot.article);
+  return uniqueArticles(slots, editorialOrder(articles.value, true), 5);
+});
 const channelGroups = computed(() => categories.value.map((category) => ({
   category,
-  articles: editorialOrder(articles.value.filter((article) => article.category.id === category.id)),
+  articles: uniqueArticles(
+    homepageLayout.value.slots.filter((slot) => slot.section === 'category_featured' && slot.scope === category.id).sort((a,b)=>a.position-b.position).map((slot)=>slot.article),
+    editorialOrder(articles.value.filter((article) => article.category.id === category.id)),
+    10,
+  ),
 })).filter((group) => group.articles.length));
 const popularArticles = computed(() => editorialOrder(articles.value));
 useHead({ title: () => text.value.title });
