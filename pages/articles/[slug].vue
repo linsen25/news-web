@@ -21,6 +21,7 @@
     <div class="story-body" v-html="bodyHtml" />
     <footer class="story-tags">
       <NuxtLink v-for="tag in publishedArticle.tags" :key="tag.id" :to="{ path: `/category/${publishedArticle.category.slug}`, query: { tag: tag.slug } }"># {{ localizedName(tag) }}</NuxtLink>
+      <span class="story-view-count" :aria-label="language === 'zh' ? '文章阅读量' : 'Article views'">{{ language === 'zh' ? '阅读' : 'Views' }} {{ publishedArticle.viewCount.toLocaleString(language === 'zh' ? 'zh-CN' : 'en-CA') }}</span>
     </footer>
     <section class="story-recommendations">
       <div class="up-next">

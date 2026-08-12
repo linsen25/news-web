@@ -18,6 +18,7 @@
         <div class="header-tools">
           <form class="header-search" role="search" @submit.prevent="search" @focusin="searchOpen = true" @focusout="closeSearch">
             <input
+              ref="searchInput"
               v-model="keyword"
               :placeholder="text.search"
               :aria-label="text.search"
@@ -27,7 +28,7 @@
               @keydown.esc="searchOpen = false"
             >
             <button v-if="keyword" class="search-clear" type="button" :aria-label="text.clearSearch" @click="clearSearch">×</button>
-            <button class="search-submit" type="submit" :aria-label="text.submitSearch">
+            <button class="search-submit" type="submit" :disabled="!keyword.trim()" :aria-label="text.submitSearch">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
             </button>
             <div v-if="searchOpen && keyword.trim()" class="search-suggestions">
@@ -112,6 +113,7 @@ const language = useCookie<'zh' | 'en'>('site-language', { default: () => 'zh' }
 const route = useRoute();
 const keyword = ref('');
 const searchOpen = ref(false);
+const searchInput = ref<HTMLInputElement | null>(null);
 const activeSuggestion = ref(-1);
 const { list } = usePublicArticles();
 const catalog = usePublicCatalog();
@@ -188,12 +190,17 @@ const clearSearch = async () => {
 };
 const search = async () => {
   const q = keyword.value.trim();
+  if (!q) {
+    searchOpen.value = false;
+    searchInput.value?.focus();
+    return;
+  }
   if (activeSuggestion.value >= 0 && suggestions.value[activeSuggestion.value]) {
     await openArticle(suggestions.value[activeSuggestion.value].slug);
     return;
   }
   searchOpen.value = false;
-  await navigateTo({ path: '/search', query: q ? { q } : {} });
+  await navigateTo({ path: '/search', query: { q } });
 };
 watch(() => route.fullPath, () => {
   if (!route.query.q) keyword.value = '';
