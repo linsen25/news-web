@@ -41,7 +41,9 @@ const copy = {
 } as const;
 const text = computed(() => copy[language.value]);
 const stableScore = (value: string) => [...value].reduce((score, character) => ((score * 31) + character.charCodeAt(0)) >>> 0, 7);
-const editorialOrder = (items: ArticleDTO[]) => [...items].sort((a, b) => stableScore(a.id) - stableScore(b.id));
+const editorialOrder = (items: ArticleDTO[]) => [...items].sort((a, b) =>
+  (b.viewCount - a.viewCount) || (stableScore(a.id) - stableScore(b.id)),
+);
 const headlineArticles = computed(() => editorialOrder(articles.value).slice(0, 4));
 const channelGroups = computed(() => categories.value.map((category) => ({
   category,

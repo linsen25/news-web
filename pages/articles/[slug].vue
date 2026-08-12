@@ -49,7 +49,7 @@ const route = useRoute();
 const language = useCookie<'zh' | 'en'>('site-language', { default: () => 'zh' });
 const localizedName = (item: { name: string; nameEn?: string }) => language.value === 'en' && item.nameEn ? item.nameEn : item.name;
 const slug = String(route.params.slug);
-const { get, list } = usePublicArticles();
+const { get, list, recordView } = usePublicArticles();
 const [{ data: article }, { data: allArticles }] = await Promise.all([
   useAsyncData(`public-article-${slug}`, () => get(slug)),
   useAsyncData('story-recommendation-articles', list, { default: () => [] }),
@@ -75,6 +75,21 @@ useSeoMeta({
 });
 
 const bodyHtml = computed(() => publishedArticle.value ? renderTipTap(publishedArticle.value.content) : '');
+onMounted(async () => {
+  if (!publishedArticle.value) return;
+  const visitorStorageKey = 'news-visitor-id';
+  let visitorId = localStorage.getItem(visitorStorageKey);
+  if (!visitorId) {
+    visitorId = `visitor-${crypto.randomUUID()}`;
+    localStorage.setItem(visitorStorageKey, visitorId);
+  }
+  try {
+    const result = await recordView(slug, visitorId);
+    publishedArticle.value.viewCount = result.viewCount;
+  } catch {
+    // Reading the article must remain available when analytics is unavailable.
+  }
+});
 const formatDate = (date: string | null) => date
   ? new Intl.DateTimeFormat(language.value === 'zh' ? 'zh-CN' : 'en-CA', { dateStyle: 'long' }).format(new Date(date))
   : language.value === 'zh' ? '未发布' : 'Unpublished';
