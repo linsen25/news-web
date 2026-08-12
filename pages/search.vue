@@ -1,7 +1,10 @@
 <template>
   <div class="container search-page">
     <header class="search-page-heading">
-      <span>SEARCH</span>
+      <div class="search-heading-top">
+        <span>SEARCH</span>
+        <NuxtLink v-if="query" to="/search">× {{ text.cancelSearch }}</NuxtLink>
+      </div>
       <h1>{{ text.title }}</h1>
       <p v-if="query">“{{ query }}” · {{ resultCount }}</p>
       <p v-else>{{ text.prompt }}</p>
@@ -46,8 +49,8 @@ const groupedResults = computed(() => categories.value.map((category) => ({
   articles: matches.value.filter((article) => article.category.id === category.id),
 })).filter((group) => group.articles.length));
 const copy = {
-  zh: { title: '搜索新闻', prompt: '在顶部搜索框输入关键词，查找相关报道。', viewChannel: '在频道中查看', empty: '没有找到匹配的已发布文章。' },
-  en: { title: 'Search News', prompt: 'Enter a keyword in the header search box to find stories.', viewChannel: 'View in channel', empty: 'No published stories match this search.' },
+  zh: { title: '搜索新闻', prompt: '在顶部搜索框输入关键词，查找相关报道。', viewChannel: '在频道中查看', empty: '没有找到匹配的已发布文章。', cancelSearch: '取消搜索' },
+  en: { title: 'Search News', prompt: 'Enter a keyword in the header search box to find stories.', viewChannel: 'View in channel', empty: 'No published stories match this search.', cancelSearch: 'Clear search' },
 } as const;
 const text = computed(() => copy[language.value]);
 const resultCount = computed(() => language.value === 'zh' ? `共 ${matches.value.length} 篇` : `${matches.value.length} ${matches.value.length === 1 ? 'story' : 'stories'}`);
