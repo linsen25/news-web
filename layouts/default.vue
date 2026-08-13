@@ -73,6 +73,12 @@
           </nav>
         </div>
       </div>
+      <div
+        v-if="!channelExpanded"
+        class="channel-hover-zone"
+        aria-hidden="true"
+        @mouseenter="openAllTags"
+      />
     </header>
     <main><slot /></main>
     <footer id="about" class="site-footer">
@@ -138,7 +144,7 @@ const tagLocation = (tag: { slug: string; categoryId?: string | null }) => {
 };
 const scheduleChannelClose = () => {
   cancelChannelClose();
-  channelCloseTimer = setTimeout(() => { channelExpanded.value = false; activeCategoryId.value = ''; }, 220);
+  channelCloseTimer = setTimeout(() => { channelExpanded.value = false; activeCategoryId.value = ''; }, 420);
 };
 const copy = {
   zh: {
@@ -186,7 +192,7 @@ const closeSearch = () => { window.setTimeout(() => { searchOpen.value = false; 
 const clearSearch = async () => {
   keyword.value = '';
   searchOpen.value = false;
-  if (route.path === '/search' && route.query.q) await navigateTo('/search');
+  if (route.path === '/search') await navigateTo('/');
 };
 const search = async () => {
   const q = keyword.value.trim();

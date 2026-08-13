@@ -3,7 +3,7 @@
     <header class="search-page-heading">
       <div class="search-heading-top">
         <span>SEARCH</span>
-        <NuxtLink v-if="query" to="/search">× {{ text.cancelSearch }}</NuxtLink>
+        <NuxtLink v-if="query" to="/">× {{ text.cancelSearch }}</NuxtLink>
       </div>
       <h1>{{ text.title }}</h1>
       <p v-if="query">“{{ query }}” · {{ resultCount }}</p>
