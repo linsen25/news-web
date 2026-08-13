@@ -1,6 +1,7 @@
 <template>
   <section
     class="headline-carousel"
+    :class="{ paused }"
     :aria-label="language === 'zh' ? '头条轮播' : 'Top stories carousel'"
     @mouseenter="paused = true"
     @mouseleave="paused = false"
