@@ -298,6 +298,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/articles/{id}/cancel-review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel an article review request and return it to draft */
+        post: operations["ArticlesController_cancelReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/articles/{id}/approve": {
         parameters: {
             query?: never;
@@ -309,6 +326,23 @@ export interface paths {
         put?: never;
         /** Approve article under review */
         post: operations["ArticlesController_approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/articles/{id}/revoke-approval": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke approval and return an article to review */
+        post: operations["ArticlesController_revokeApproval"];
         delete?: never;
         options?: never;
         head?: never;
@@ -343,6 +377,91 @@ export interface paths {
         put?: never;
         /** Publish approved article */
         post: operations["ArticlesController_publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/articles/{id}/schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Schedule an approved article for publication and optional expiry */
+        post: operations["ArticlesController_schedule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/articles/{id}/cancel-schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel a scheduled publication */
+        post: operations["ArticlesController_cancelSchedule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/articles/{id}/unpublish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Temporarily take a published article offline */
+        post: operations["ArticlesController_unpublish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/articles/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive a published article without a public retraction notice */
+        post: operations["ArticlesController_archive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/articles/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore a temporarily unpublished or archived article */
+        post: operations["ArticlesController_restore"];
         delete?: never;
         options?: never;
         head?: never;
@@ -535,6 +654,22 @@ export interface paths {
         };
         get: operations["HomepageController_findAll"];
         put: operations["HomepageController_replace"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/analytics/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AnalyticsController_overview"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -756,6 +891,16 @@ export interface components {
             publishedAt: string | null;
             /** @description 编辑中的文章是否仍有一个旧版本在线展示 */
             hasPublishedVersion: boolean;
+            /** @enum {string|null} */
+            offlineKind: "temporary" | "retraction" | "archive" | null;
+            withdrawalReason: string | null;
+            /** Format: date-time */
+            withdrawnAt: string | null;
+            /** Format: date-time */
+            scheduledPublishAt: string | null;
+            /** Format: date-time */
+            scheduledUnpublishAt: string | null;
+            scheduledUnpublishReason: string | null;
             /** @example 128 */
             viewCount: number;
             /** Format: date-time */
@@ -944,6 +1089,14 @@ export interface components {
             /** @example 图片版权不明确，请补充来源。 */
             comment: string;
         };
+        ScheduleArticleDto: {
+            /** Format: date-time */
+            publishAt: string;
+            /** Format: date-time */
+            unpublishAt?: string;
+            /** @example 活动已结束 */
+            unpublishReason?: string;
+        };
         WithdrawArticleDto: {
             /** @example 部分事实需要进一步核实。 */
             reason: string;
@@ -990,6 +1143,14 @@ export interface components {
             /** @example cat-tech */
             categoryId?: string;
         };
+        MediaArticleReferenceDto: {
+            /** @example user-author */
+            id: string;
+            /** @example 林作者 */
+            name: string;
+            /** @example draft */
+            status: string;
+        };
         MediaAssetDto: {
             /** @example media-001 */
             id: string;
@@ -1008,6 +1169,7 @@ export interface components {
             createdAt: string;
             /** @example 2 */
             referenceCount: number;
+            referenceArticles: components["schemas"]["MediaArticleReferenceDto"][];
         };
         HomepageSlotDto: {
             id: string;
@@ -1041,6 +1203,36 @@ export interface components {
         };
         UpdateHomepageLayoutDto: {
             slots: components["schemas"]["HomepageSlotInputDto"][];
+        };
+        AnalyticsStatusCountsDto: {
+            total: number;
+            draft: number;
+            review: number;
+            approved: number;
+            rejected: number;
+            published: number;
+            withdrawn: number;
+        };
+        AnalyticsTrendPointDto: {
+            /** @example 2026-08-12 */
+            date: string;
+            views: number;
+        };
+        AnalyticsArticleDto: {
+            id: string;
+            title: string;
+            slug: string;
+            category: string;
+            viewCount: number;
+            publishedAt: Record<string, never> | null;
+        };
+        AnalyticsOverviewDto: {
+            statuses: components["schemas"]["AnalyticsStatusCountsDto"];
+            totalViews: number;
+            viewsLast7Days: number;
+            publishedLast30Days: number;
+            trend: components["schemas"]["AnalyticsTrendPointDto"][];
+            topArticles: components["schemas"]["AnalyticsArticleDto"][];
         };
     };
     responses: never;
@@ -1524,6 +1716,27 @@ export interface operations {
             };
         };
     };
+    ArticlesController_cancelReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArticleDto"];
+                };
+            };
+        };
+    };
     ArticlesController_approve: {
         parameters: {
             query?: never;
@@ -1538,6 +1751,27 @@ export interface operations {
                 "application/json": components["schemas"]["ApproveArticleDto"];
             };
         };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArticleDto"];
+                };
+            };
+        };
+    };
+    ArticlesController_revokeApproval: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             200: {
                 headers: {
@@ -1575,6 +1809,123 @@ export interface operations {
         };
     };
     ArticlesController_publish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArticleDto"];
+                };
+            };
+        };
+    };
+    ArticlesController_schedule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScheduleArticleDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArticleDto"];
+                };
+            };
+        };
+    };
+    ArticlesController_cancelSchedule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArticleDto"];
+                };
+            };
+        };
+    };
+    ArticlesController_unpublish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WithdrawArticleDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArticleDto"];
+                };
+            };
+        };
+    };
+    ArticlesController_archive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WithdrawArticleDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArticleDto"];
+                };
+            };
+        };
+    };
+    ArticlesController_restore: {
         parameters: {
             query?: never;
             header?: never;
@@ -1955,6 +2306,25 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HomepageLayoutDto"];
+                };
+            };
+        };
+    };
+    AnalyticsController_overview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalyticsOverviewDto"];
                 };
             };
         };
