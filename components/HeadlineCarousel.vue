@@ -12,7 +12,7 @@
       <article :key="activeArticle.id" class="headline-carousel-card">
         <NuxtLink :to="`/articles/${activeArticle.slug}`" class="headline-carousel-image">
           <img v-if="cardImage" :src="cardImage" :alt="activeArticle.title" :style="imagePosition" />
-          <span v-else>CHINA CANADA NET</span>
+          <span v-else>中加网 | CHINA CANADA NET</span>
         </NuxtLink>
         <div class="headline-carousel-shade" aria-hidden="true" />
         <div class="headline-carousel-copy">
