@@ -14,7 +14,7 @@
     <header class="story-header">
       <NuxtLink class="category" :to="`/category/${publishedArticle.category.slug}`">{{ localizedName(publishedArticle.category) }}</NuxtLink>
       <h1>{{ publishedArticle.title }}</h1>
-      <p class="dek">{{ publishedArticle.summary }}</p>
+      <p v-if="publishedArticle.summary" class="dek">{{ publishedArticle.summary }}</p>
       <div class="byline"><span v-if="publishedArticle.byline">{{ language === 'zh' ? '文' : 'By' }} / {{ publishedArticle.byline }}</span><time>{{ formatDate(publishedArticle.articleDate) }}</time></div>
     </header>
     <figure v-if="publishedArticle.coverImage"><img :src="publishedArticle.coverImage" :alt="publishedArticle.title" :style="coverPosition" /></figure>
@@ -65,6 +65,26 @@ const relatedArticles = computed(() => publishedArticle.value
 const popularArticles = computed(() => allArticles.value
   .filter((item) => item.id !== publishedArticle.value?.id)
   .sort((a, b) => new Date(b.publishedAt || b.articleDate || 0).getTime() - new Date(a.publishedAt || a.articleDate || 0).getTime()));
+type ContentNode = { type:string; text?:string; attrs?:Record<string, unknown>; content?:ContentNode[] };
+const bodyText = computed(() => {
+  const text:string[]=[];
+  const visit=(nodes:ContentNode[]) => nodes.forEach((node) => { if(node.type==='text' && node.text) text.push(node.text); if(node.content) visit(node.content); });
+  if (publishedArticle.value) visit((publishedArticle.value.content.content || []) as ContentNode[]);
+  return text.join(' ').replace(/\s+/g, ' ').trim();
+});
+const firstBodyImage = computed(() => {
+  let image='';
+  const visit=(nodes:ContentNode[]):boolean => nodes.some((node) => {
+    if (node.type === 'image' && typeof node.attrs?.src === 'string') { image=node.attrs.src; return true; }
+    return node.content ? visit(node.content) : false;
+  });
+  if (publishedArticle.value) visit((publishedArticle.value.content.content || []) as ContentNode[]);
+  return image;
+});
+const shareTitle = computed(() => publishedArticle.value?.metaTitle || publishedArticle.value?.title || '中加网');
+const shareDescription = computed(() => publishedArticle.value?.metaDescription || publishedArticle.value?.summary || bodyText.value.slice(0, 120));
+const shareImage = computed(() => publishedArticle.value?.coverImage || firstBodyImage.value || '');
+const canonicalUrl = computed(() => `https://chinacanadanet.com/articles/${encodeURIComponent(slug)}`);
 
 useSeoMeta({
   title: () => publishedArticle.value?.metaTitle || article.value?.title || '新闻文章',
@@ -72,13 +92,22 @@ useSeoMeta({
   keywords: () => publishedArticle.value?.keywords.join(', ') || '',
   ogTitle: () => publishedArticle.value?.metaTitle || article.value?.title || '新闻文章',
   ogDescription: () => publishedArticle.value?.metaDescription || publishedArticle.value?.summary || withdrawalNotice.value?.reason || '',
-  ogImage: () => publishedArticle.value?.coverImage || '',
+  ogImage: () => shareImage.value,
+  ogUrl: () => canonicalUrl.value,
+  ogType: 'article',
   twitterCard: 'summary_large_image',
 });
+useHead({ link:[{ rel:'canonical', href:canonicalUrl.value }] });
 
 const bodyHtml = computed(() => publishedArticle.value ? renderTipTap(publishedArticle.value.content) : '');
 onMounted(async () => {
   if (!publishedArticle.value) return;
+  void useWechatShare().configure({
+    title:shareTitle.value,
+    desc:shareDescription.value,
+    link:canonicalUrl.value,
+    imgUrl:shareImage.value,
+  }).catch((error) => console.warn('WeChat sharing is unavailable', error));
   const visitorStorageKey = 'news-visitor-id';
   let visitorId = localStorage.getItem(visitorStorageKey);
   if (!visitorId) {

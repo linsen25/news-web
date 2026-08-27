@@ -281,6 +281,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/articles/{id}/view-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Set an article view count and record the change in its audit history */
+        put: operations["ArticlesController_updateViewCount"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/articles/{id}/submit": {
         parameters: {
             query?: never;
@@ -613,6 +630,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/upload/media/{id}/library": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["UploadController_addToLibrary"];
+        trace?: never;
+    };
+    "/api/upload/media/cleanup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UploadController_cleanupUnused"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/revisions/article/{articleId}": {
         parameters: {
             query?: never;
@@ -669,6 +718,23 @@ export interface paths {
             cookie?: never;
         };
         get: operations["AnalyticsController_overview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/wechat/jssdk-config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Create a short-lived WeChat JS-SDK signature for one page URL */
+        get: operations["WechatController_createConfig"];
         put?: never;
         post?: never;
         delete?: never;
@@ -952,6 +1018,10 @@ export interface components {
             auditLogs: components["schemas"]["AuditLogDto"][];
             reviewComments: components["schemas"]["ReviewCommentDto"][];
         };
+        UpdateViewCountDto: {
+            /** @example 1250 */
+            viewCount: number;
+        };
         CreateArticleDto: {
             /** @example 加拿大 AI 政策更新 */
             title: string;
@@ -1164,6 +1234,8 @@ export interface components {
             mimeType: string;
             /** @example 245760 */
             size: number;
+            /** @example true */
+            inLibrary: boolean;
             uploadedBy: components["schemas"]["EntityReferenceDto"];
             /** Format: date-time */
             createdAt: string;
@@ -1233,6 +1305,12 @@ export interface components {
             publishedLast30Days: number;
             trend: components["schemas"]["AnalyticsTrendPointDto"][];
             topArticles: components["schemas"]["AnalyticsArticleDto"][];
+        };
+        WechatJsSdkConfigDto: {
+            appId: string;
+            timestamp: number;
+            nonceStr: string;
+            signature: string;
         };
     };
     responses: never;
@@ -1691,6 +1769,31 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ArticleHistoryDto"];
+                };
+            };
+        };
+    };
+    ArticlesController_updateViewCount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateViewCountDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArticleDto"];
                 };
             };
         };
@@ -2168,7 +2271,9 @@ export interface operations {
     };
     UploadController_uploadImage: {
         parameters: {
-            query?: never;
+            query: {
+                library: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -2223,6 +2328,46 @@ export interface operations {
         requestBody?: never;
         responses: {
             204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UploadController_addToLibrary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaAssetDto"];
+                };
+            };
+        };
+    };
+    UploadController_cleanupUnused: {
+        parameters: {
+            query: {
+                days: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2325,6 +2470,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AnalyticsOverviewDto"];
+                };
+            };
+        };
+    };
+    WechatController_createConfig: {
+        parameters: {
+            query: {
+                url: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WechatJsSdkConfigDto"];
                 };
             };
         };

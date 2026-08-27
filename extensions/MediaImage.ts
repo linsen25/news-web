@@ -18,10 +18,13 @@ export const MediaImage = Image.extend({
 
   renderHTML({ HTMLAttributes }) {
     const { caption, ...imageAttributes } = HTMLAttributes;
+    const src = typeof imageAttributes.src === 'string' && imageAttributes.src.includes('/image/upload/')
+      ? imageAttributes.src.replace('/image/upload/', '/image/upload/f_auto,q_auto,w_1400,c_limit/')
+      : imageAttributes.src;
     return [
       'figure',
       { class: 'media-image' },
-      ['img', mergeAttributes(this.options.HTMLAttributes, imageAttributes)],
+      ['img', mergeAttributes(this.options.HTMLAttributes, imageAttributes, { src, loading:'lazy', decoding:'async' })],
       ...(caption ? [['figcaption', {}, String(caption)]] : []),
     ] as never;
   },
